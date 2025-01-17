@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1096495719915",
+    "project_id": "codebuddy-928a6",
+    "storage_bucket": "codebuddy-928a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096495719915:android:e522d2ff375b55297fe5ae",
+        "android_client_info": {
+          "package_name": "com.codebuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5jZIEh69eWPby49ZGb48QT5YowLy7h84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
