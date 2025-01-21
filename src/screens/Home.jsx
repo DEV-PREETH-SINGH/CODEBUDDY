@@ -1,22 +1,62 @@
-// src/screens/Home.js
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button, Alert, ActivityIndicator } from 'react-native';
+import { firebase } from '../firebase/config';
+import { useAuth } from '../context/AuthContext';  // Import your AuthContext
 
-const Home = () => {
-  const { user, logout } = useAuth();  // Get user info from AuthContext
+const Home = ({ navigation }) => {
+  const { user } = useAuth();  // Get the current logged-in user from AuthContext
+  const [loading, setLoading] = useState(false);
+  const [date] = useState(new Date().toISOString().split('T')[0]);  // Get today's date in YYYY-MM-DD format
+
+  // Handle the "Start Today" button press
+  const handleStartToday = async () => {
+    if (!user || !user.displayName) {
+      Alert.alert('Error', 'User data is not available. Please try again.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const docRef = firebase.firestore().collection('startToday').doc(date);  // Reference to the specific date document
+      const doc = await docRef.get();
+
+      if (doc.exists) {
+        const data = doc.data();
+        const userIds = data.userIds || [];
+
+        // Add user displayName to the user list if it's not already present
+        if (!userIds.includes(user.displayName)) {
+          userIds.push(user.displayName);
+          await docRef.update({ userIds });
+        }
+      } else {
+        // If document doesn't exist, create it with the user list
+        await docRef.set({
+          userIds: [user.displayName],
+        });
+      }
+
+      Alert.alert('Success', 'Your name has been recorded!');
+    } catch (error) {
+      console.error("Error updating database:", error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {user ? (
-        <>
-          {/* Wrapping text in <Text> component */}
-          <Text style={styles.greeting}>Hello, {user.displayName}!</Text>
-          <Button title="Logout" onPress={logout} />
-        </>
+      <Text style={styles.title}>Welcome, {user.displayName}!</Text>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <Text>No user currently signed in</Text>  
+        <Button title="Start Today" onPress={handleStartToday} />
       )}
+
+      {/* Navigate to the UserList screen to see users who started today */}
+      <Button title="View Users Who Started Today" onPress={() => navigation.navigate('UserList', { date })} />
     </View>
   );
 };
@@ -27,8 +67,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  greeting: {
-    fontSize: 20,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
 });

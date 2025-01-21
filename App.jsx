@@ -1,30 +1,24 @@
 // App.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { AuthProvider } from './src/context/AuthContext';
-import AppNavigator from './src/Navigation/AppNavigator';
+import { AuthProvider } from './src/context/AuthContext'; // Import AuthProvider
+import AppNavigator from './src/Navigation/AppNavigator'; // Import navigation stack
+
+import { firebaseConfig } from './src/firebase/config';
 import firebase from '@react-native-firebase/app';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyD5jZIEh69eWPby49ZGb48QT5YowLy7h84',
-  authDomain: 'codebuddy-928a6.firebaseapp.com',
-  databaseURL: 'https://codebuddy-928a6.firebaseio.com',
-  projectId: 'codebuddy-928a6',
-  storageBucket: 'codebuddy-928a6.appspot.com',
-  messagingSenderId: '1096495719915',
-  appId: '1:1096495719915:android:e522d2ff375b55297fe5ae',
-  measurementId: 'G-YOUR_MEASUREMENT_ID', // If not using Analytics, this can be omitted.
-};
-
+// Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); // Use the already initialized app
 }
 
 const App = () => {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <AppNavigator />
+        <AppNavigator /> 
       </AuthProvider>
     </NavigationContainer>
   );

@@ -1,5 +1,3 @@
-// src/context/AuthContext.js
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
 
@@ -13,8 +11,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(setUser);  // This will update the user state when auth state changes
-    return subscriber;  // Unsubscribe on unmount
+    const subscriber = auth().onAuthStateChanged(setUser);
+    return subscriber; // Unsubscribe on unmount
   }, []);
 
   const login = async (email, password) => {
@@ -29,9 +27,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
 
-      // After account creation, update the displayName
       await userCredential.user.updateProfile({
-        displayName: name,  // Set displayName to the user's name
+        displayName: name,
       });
 
       alert('User registered successfully');
